@@ -22,7 +22,9 @@ const mongooseOptions = {
 };
 
 mongoose.connect(config.mongoUri, mongooseOptions).then(() => logger.info('Connected to MongoDB')).catch(error => logger.error(`Error connecting to MongoDB: ${error}`));
+const authRoutes = require('./routes/auth'); // add this
 
+app.use('/auth', authRoutes); // add this
 app.use('/news', routes);
 cron.start();
 

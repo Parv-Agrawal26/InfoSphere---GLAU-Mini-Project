@@ -4,6 +4,7 @@ import Header from "./components/header";
 import Navbar from "./components/nav";
 import CardList from "./components/cards";
 import ApiService from "./services/api";
+import LoginRegister from "./components/LoginRegister"; // 🆕 added
 
 const darkTheme = createTheme({
   palette: {
@@ -25,18 +26,29 @@ const darkTheme = createTheme({
 const App = () => {
   const [articles, setArticles] = useState([]);
   const [category, setCategory] = useState("general");
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token")); // 🆕 auth state
 
   useEffect(() => {
     const fetchArticles = async () => {
+      if (!isLoggedIn) return;
       const response = await ApiService.fetchArticles(category);
       setArticles(response);
     };
     fetchArticles();
-  }, [category]);
+  }, [category, isLoggedIn]);
 
   const handleCategoryChange = (category) => {
     setCategory(category);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  if (!isLoggedIn) {
+    return <LoginRegister onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -47,7 +59,11 @@ const App = () => {
           color: "#ffffff",
         }}
       >
-        <Header title="News Aggregator" />
+        <Header
+          title="News Aggregator"
+          isLoggedIn={isLoggedIn} // 🆕 pass auth status
+          onLogout={handleLogout} // 🆕 pass logout handler
+        />
         <Navbar onCategoryChange={handleCategoryChange} />
         <CardList articles={articles} />
       </div>

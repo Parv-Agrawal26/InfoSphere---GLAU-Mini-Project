@@ -1,5 +1,10 @@
 import React from "react";
-import { ThemeProvider, createTheme, Typography } from "@material-ui/core";
+import {
+  ThemeProvider,
+  createTheme,
+  Typography,
+  Button,
+} from "@material-ui/core";
 
 const darkTheme = createTheme({
   palette: {
@@ -15,7 +20,7 @@ const darkTheme = createTheme({
   },
 });
 
-const Header = ({ title, tagline }) => {
+const Header = ({ title, tagline, isLoggedIn, onLogout }) => {
   return (
     <ThemeProvider theme={darkTheme}>
       <header
@@ -26,6 +31,7 @@ const Header = ({ title, tagline }) => {
           background: "#1e1e1e",
           borderRadius: "10px",
           color: "#ffffff",
+          position: "relative",
         }}
       >
         <Typography
@@ -78,6 +84,23 @@ const Header = ({ title, tagline }) => {
         >
           "Stay informed. Stay ahead."
         </Typography>
+
+        {isLoggedIn && (
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={onLogout}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              borderColor: "#bbb",
+              color: "#bbb",
+            }}
+          >
+            Logout
+          </Button>
+        )}
       </header>
     </ThemeProvider>
   );
